@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Rotationskurve</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./jquery.min.js"></script>
+    <script src="./chart.js"></script>
+    <script src="./roundslider.min.js"></script>
+    <link href="./roundslider.min.css" rel="stylesheet"/>
+	
+    <link href="./styles.css" rel="stylesheet"/>
+	<script src="./xeogl.js"></script>
+    <script src="./axisHelper.js"></script>
+    <script src="./vectorTextGeometry.js"></script>
+    <script src="./k3d.js"></script>
+    <script src="./objGeometryLoader.js"></script>
+
+</head>
+<body>
+
+
+<div id=container_galaxy class="container_galaxy">
+	<center><FONT SIZE="6">Klicken und drehen Sie die Galaxie!</FONT></center>
+
+	<canvas  class="canvas" id="myCanvas" ></canvas>
+</div>
+
+<div id=container_chart_1 class="container_controls_1">
+	<canvas id="line-chart" class="chart_canvas"></canvas>
+	<p></p>
+	<center><p> <img src="formula.png" width="135" height="45"></p></center>
+</div>
+<div id=container_chart_2 class="container_controls_2">
+	<center><FONT SIZE="6">Steuern Sie den Anteil</FONT></center>
+	<center><FONT SIZE="6">Dunkler Materie in der Galaxie!</FONT></center>
+	<div id="appearance7" class="rslider"></div>
+</div>
+
+<script>
+
+//	<p></p>
+//	Die Zahl im Slider gibt den Anteil an dunkler Materie relativ zu unserer Milchstraße. 
+//	<center><p>Mit Hilfe des Sliders nehmen Sie Einfluss auf die Menge an Dunkler Materie. Sie können zwischen und dem, was Astronomen wirklich beobachten.</p></center>
+
+//	change event :<div id="range"></div>
+//  drag event : <div id="range1"></div>
+
+
+
+
+$("#appearance7").roundSlider({
+		radius: 120,
+		width: 10,
+		handleSize: "+20",
+		handleShape: "dot",
+		sliderType: "min-range",
+		step: 25,
+		value: 50,
+		tooltipFormat: function (args) {
+			slider_out = args.value
+			return args.value + " %";
+		},
+		change: function (args) {
+			console.log(args.value);
+			update_values(args.value);
+			$('#range').html(args.value)
+         } ,
+        drag:function(args) {
+			$('#range1').html(args.value)
+        }
+		
+	});
+	
+	
+	/**function removeData(chart) {
+    chart.data.labels.pop();
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.pop();
+    });
+    chart.update();
+}**/
+	
+
+    function update_values(dm_value) {
+
+
+		if(dm_value==0){
+			var new_data = [0,120,75,40,20,10,5,2];
+			config.data.datasets[0].data=new_data;
+			var ctx = document.getElementById("line-chart");
+			window.myLine.destroy();
+			window.myLine = new Chart(ctx, config);
+		}
+		if(dm_value==25){
+			var new_data = [0,127,100,78,60,50,46,41];
+			config.data.datasets[0].data=new_data;
+			var ctx = document.getElementById("line-chart");
+			window.myLine.destroy();
+			window.myLine = new Chart(ctx, config);
+		}
+    	if(dm_value==50){
+			var new_data = [0,135,125,108,95,88,84,80];
+			config.data.datasets[0].data=new_data;
+			var ctx = document.getElementById("line-chart");
+			window.myLine.destroy();
+			window.myLine = new Chart(ctx, config);
+		}
+		if(dm_value==75){
+			var new_data = [0,145,140,130,125,120,115,110];
+			config.data.datasets[0].data=new_data;
+			var ctx = document.getElementById("line-chart");
+			window.myLine.destroy();
+			window.myLine = new Chart(ctx, config);
+		}		
+    	if(dm_value==100){
+			var new_data = [0,150,160,155,149,152,145,150];
+			config.data.datasets[0].data=new_data;
+			var ctx = document.getElementById("line-chart");
+			window.myLine.destroy();
+			window.myLine = new Chart(ctx, config);
+		}
+    }	
+
+	window.onload = function draw_chart() {
+			var ctx = document.getElementById("line-chart");
+			window.myLine = new Chart(ctx, config);
+		};
+
+//var chart = new Chart(document.getElementById("line-chart"), {
+var config = {
+  type: 'line',
+  data: {
+    labels: [0,5,10,15,20,25,30,35,40],
+    datasets: [{ 
+        data: [0,135,125,108,95,88,84,80],
+        /**label: "Rotationsgeschwindigkeit in km/s",**/
+        /**borderColor: "#0080FF",
+        backgroundColor: "rgba(0, 128, 255, 0.2)",**/
+        borderColor: "#FFFFFF",
+        backgroundColor: "rgba(128,128,128, 0.5)",
+        fill: true
+      }
+    ]
+  },
+  options: {
+    legend: {
+        display: false
+    },
+	tooltips: {
+		enabled: false
+	},
+    title: {
+      display: true,
+      text: 'Rotationsgeschwindigkeit Sterne',
+		fontColor: "#CCCCCC",
+    },
+	scales: { 
+   	yAxes: [{
+			scaleLabel: {
+        		display: true,
+        		labelString: 'Geschwindigkeit v [km/s]',
+				fontColor: "#CCCCCC",
+      	 },
+	   	gridLines: {
+   	       display: true,
+   	       color: "#CCCCCC"
+      	 }, 
+      	ticks: {
+         fontColor: "#CCCCCC",
+         beginAtZero: true,
+		 max: 180,
+         min: 0
+         }
+      }],
+		xAxes: [{
+			scaleLabel: {
+        		display: true,
+        		labelString: 'Radius r [kpc]',
+				fontColor: "#CCCCCC",
+      	 },
+	   	gridLines: {
+   	       display: true,
+   	       color: "#CCCCCC"
+      	 }, 
+      	ticks: {
+         fontColor: "#CCCCCC",
+         beginAtZero: true,
+		 max: 40,
+         min: 0
+         }
+      }]
+   }
+  }
+//});
+};
+
+    function interpol_star(rPOS, dm_val) {
+	    var xROT;
+		var yROT;
+		var ind;
+		var rescale;
+		var vint;
+		var dm_val;
+		
+		rescale = 3.2;
+		xROT = [0,5,10,15,20,25,30,35];
+		if(dm_val==0){
+			yROT = [0,120,75,60,40,20,18,16];
+		}
+		if(dm_val==25){
+			yROT = [0,127,100,90,78,65,54,50,46,41,39];
+		}
+		if(dm_val==50){
+			yROT = [0,135,125,115,108,95,88,84,82,80,78];
+		}
+		if(dm_val==75){		
+			yROT = [0,153,140,130,121,121,117,116,114,113,112];
+		}
+    	if(dm_val==100){
+			yROT = [0,160,155,149,152,145,150,130,147,151];
+		}
+
+		var max_of_array = Math.max.apply(Math, xROT);
+
+		for (var k = 1; k < xROT.length; k++) {
+			if(rescale*xROT[k]/max_of_array>rPOS){
+				ind=k;
+				break;
+			}
+		}
+		vint=yROT[ind-1]*(1.-(rPOS-rescale*xROT[ind-1]/max_of_array)/(rescale*xROT[ind]/max_of_array-rescale*xROT[ind-1]/max_of_array))+yROT[ind]*(rPOS-rescale*xROT[ind-1]/max_of_array)/(rescale*xROT[ind]/max_of_array-rescale*xROT[ind-1]/max_of_array);
+		return vint/(Math.max.apply(Math, yROT)*rPOS);
+	}
+
+
+	
+   // Create the default scene ourselves so we can
+    // have a transparent canvas on it
+    var scene = new xeogl.Scene({
+        canvas: "myCanvas",
+        transparent: true
+    });
+	
+    xeogl.setDefaultScene(scene);
+	
+	
+    var sphereGeometry = new xeogl.SphereGeometry({
+        radius: 0.015,
+    });
+	
+    var bulgeGeometry = new xeogl.SphereGeometry({
+        radius: 0.057,
+    });
+
+	
+	
+	var x  = -0.1;
+	var y  = -0.1;
+	var z  = 0.0;
+	var dr = 0.008;
+	var rscatter = 0.3;
+	var dpi = Math.PI/160.;
+	
+	
+	
+// Bulge stars
+    for (var i = 1; i < 80; i++) {
+        new xeogl.Mesh({
+			id: "Id" + i,
+            geometry: sphereGeometry,
+//            rotation: [
+//                Math.random() * 360,
+//                Math.random() * 360,
+//                Math.random() * 360
+//            ],
+            position: [
+                x+dr*i*Math.cos(i*dpi)+Math.random()*rscatter, //Math.random() * 15 - 7,
+                y+dr*i*Math.sin(i*dpi)+Math.random()*rscatter, //Math.random() * 15 - 7,
+                (Math.random()-Math.random()*0.5)*0.3
+            ],
+            material: new xeogl.PhongMaterial({
+				emissive: [0.2, 0.2, 1.]
+            })
+        });
+    }
+	
+// Spiral arm 1 stars	
+    for (var i = 80; i < 400; i++) {
+        new xeogl.Mesh({
+			id: "Id" + i,
+            geometry: sphereGeometry,
+//            rotation: [
+//                Math.random() * 360,
+//                Math.random() * 360,
+//                Math.random() * 360
+//            ],
+            position: [
+                x+dr*i*Math.cos(i*dpi)+Math.random()*rscatter, //Math.random() * 15 - 7,
+                y+dr*i*Math.sin(i*dpi)+Math.random()*rscatter, //Math.random() * 15 - 7,
+                (Math.random()-Math.random()*0.5)*0.1
+            ],
+            material: new xeogl.PhongMaterial({
+				emissive: [0.2, 0.2, 1.]
+            })
+        });
+    }
+
+// Bulge stars
+	for (var i = 1; i < 80; i++) {
+        new xeogl.Mesh({
+			id: "Id" + -i,
+            geometry: sphereGeometry,
+            position: [
+                -x-dr*i*Math.cos(i*dpi)-Math.random()*rscatter, //Math.random() * 15 - 7,
+                -y-dr*i*Math.sin(i*dpi)-Math.random()*rscatter, //Math.random() * 15 - 7,
+                (Math.random()-Math.random()*0.5)*0.3
+            ],
+            material: new xeogl.PhongMaterial({
+				emissive: [0.2, 0.2, 1.]
+            })
+        });
+    }
+
+// Spiral arm 2 stars	
+	for (var i = 80; i < 400; i++) {
+        new xeogl.Mesh({
+			id: "Id" + -i,
+            geometry: sphereGeometry,
+            position: [
+                -x-dr*i*Math.cos(i*(dpi))-Math.random()*rscatter, //Math.random() * 15 - 7,
+                -y-dr*i*Math.sin(i*(dpi))-Math.random()*rscatter, //Math.random() * 15 - 7,
+                (Math.random()-Math.random()*0.5)*0.1
+            ],
+            material: new xeogl.PhongMaterial({
+				emissive: [0.2, 0.2, 1.]
+            })
+        });
+    }
+	
+	
+    var hugeBULGE = new xeogl.Mesh({
+            geometry: bulgeGeometry,
+            position: [
+                0,0,0
+            ],
+            material: new xeogl.PhongMaterial({
+				emissive: [1, 1., 1.]
+            })
+        });
+
+//    var scene = hugeBULGE.scene; // We can get the default Scene from any of our components
+    var spin = false; // Orbits camera when true
+    var a = 0;
+    var redLeg = scene.components[1];
+	var star_coord;
+	var xstar;
+	var ystar;
+	var zstar;
+	var xstarold;
+	var ystarold;
+	var zstarold;
+	//var rstar;
+	var id_string;
+	var data_r=[];
+	var Dang=[];
+    var angSHIFT=-0.02;
+
+//	Updating anduglar frequencies and writing to a vector
+
+	/**for (var j = 1; j < 400; j++){
+		id_string = "Id" + j;
+		star_coord=scene.components[id_string];
+		xstarold=star_coord.position[0];
+		ystarold=star_coord.position[1];
+		zstarold=star_coord.position[2];
+		rstar=Math.sqrt(xstarold*xstarold+ystarold*ystarold+zstarold*zstarold);
+		data_r.push(rstar);
+		Dang.push(interpol_star(rstar,50)*4);	
+	} **/
+
+	
+    scene.on("tick", function () {
+	
+		var slider_out=$("#appearance7").roundSlider("option","value");
+//		console.log(slider_out);
+		var PHI_update;
+		var rstar;
+		for (var j = 1; j < 400; j++) {
+			id_string = "Id" + j;
+			star_coord=scene.components[id_string];
+			xstarold=star_coord.position[0];
+			ystarold=star_coord.position[1];
+			zstarold=star_coord.position[2];
+			rstar=Math.sqrt(xstarold*xstarold+ystarold*ystarold);
+			PHI_update=interpol_star(rstar,slider_out);
+			xstar= Math.cos(PHI_update*angSHIFT)*xstarold-Math.sin(PHI_update*angSHIFT)*ystarold;
+			ystar= Math.sin(PHI_update*angSHIFT)*xstarold+Math.cos(PHI_update*angSHIFT)*ystarold;
+			star_coord.position = [xstar,ystar,zstarold];
+			
+
+			id_string = "Id" + -j;
+			star_coord=scene.components[id_string];
+			xstarold=star_coord.position[0];
+			ystarold=star_coord.position[1];
+			zstarold=star_coord.position[2];
+			rstar=Math.sqrt(xstarold*xstarold+ystarold*ystarold);
+			PHI_update=interpol_star(rstar,slider_out);
+			xstar= Math.cos(PHI_update*angSHIFT)*xstarold-Math.sin(PHI_update*angSHIFT)*ystarold;
+			ystar= Math.sin(PHI_update*angSHIFT)*xstarold+Math.cos(PHI_update*angSHIFT)*ystarold;
+			star_coord.position = [xstar,ystar,zstarold];
+
+		}
+		
+    });
+	
+
+    // Allow user interaction
+    new xeogl.CameraControl();
+	scene.camera.orbitYaw(0);
+	scene.camera.orbitPitch(0);
+	scene.camera.zoom(-2);
+	
+    new xeogl.AxisHelper({
+        camera: scene.camera,
+        size: [250, 250],
+        visible: true
+    });	
+
+	
+	
+//var camera = scene.camera;
+//camera.eye = [0, 0, -4];
+// Orbit the camera
+//    scene.on("tick", function () {
+//        camera.orbitYaw(0.2);
+//        camera.orbitPitch(0.1);
+//    });
+
+
+
+
+</script>
+<font color="black"><FONT SIZE="1">Credits: jquery,chart.js,xeogl.js, roundslider.js</FONT></font>
+</body>
+</html>
